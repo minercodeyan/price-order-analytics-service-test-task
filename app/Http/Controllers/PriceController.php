@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PriceRequest;
 use App\Services\PriceParserService;
+use App\Traits\PriceAnnotations;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class PriceController extends Controller
 {
+    use PriceAnnotations;
     public function __construct(
         protected PriceParserService $priceParserService
     ) {}
