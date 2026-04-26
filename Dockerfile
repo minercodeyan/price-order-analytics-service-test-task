@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm
 
 ARG UID=1000
 ARG GID=1000
@@ -13,11 +13,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libxml2-dev \
     libonig-dev \
-    libsodium-dev \
     libicu-dev \
+    default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# PHP расширения (только нужные)
+# PHP расширения
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
     pdo_mysql \
@@ -27,25 +27,19 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     bcmath \
     mbstring \
     soap \
-    intl
+    intl \
+    opcache
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Apache
-RUN a2enmod rewrite
-
-# Пользователь
+# Создаём пользователя
 RUN groupadd -g ${GID} laravel \
     && useradd -u ${UID} -g laravel -m laravel \
     && usermod -aG www-data laravel
 
 WORKDIR /var/www/html
 
-COPY ./docker/apache/vhost.conf /etc/apache2/sites-available/000-default.conf
-
 USER laravel
 
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+CMD ["php-fpm"]
