@@ -67,6 +67,6 @@ class PriceParserService
             }
         }
 
-        return '';
+        return null;
     }
 }
