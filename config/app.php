@@ -95,6 +95,8 @@ return [
     |
     */
 
+    'soap_api_key' => env('SOAP_API_KEY', 'TEST_1J89U4948482NC'),
+
     'cipher' => 'AES-256-CBC',
 
     'key' => env('APP_KEY'),

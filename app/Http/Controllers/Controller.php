@@ -22,6 +22,13 @@ use OpenApi\Attributes as OA;
     type: "http",
     scheme: "bearer"
 )]
+#[OA\SecurityScheme(
+    securityScheme: "ApiKeyAuth",
+    type: "apiKey",
+    description: "API Key for authentication. Test key: TEST_1J89U4948482NC",
+    name: "X-API-Key",
+    in: "header"
+)]
 abstract class Controller
 {
     //

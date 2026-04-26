@@ -12,7 +12,6 @@ class Order extends Model
 
     protected $table = 'orders';
 
-    // Отключаем автоматические timestamps Laravel
     public $timestamps = false;
 
     protected $fillable = [

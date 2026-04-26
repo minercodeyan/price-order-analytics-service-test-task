@@ -12,4 +12,4 @@ Route::get('/orders/statistics', [OrderStatisticsController::class, 'index']);
 
 Route::get('/orders/{id}', [OrderController::class, 'show']);
 
-Route::post('/soap', [OrderController::class, 'soapStore']);
+Route::post('/soap/order', [OrderController::class, 'soapStore']);
