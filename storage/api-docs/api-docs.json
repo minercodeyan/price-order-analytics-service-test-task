@@ -1,0 +1,229 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Order API",
+        "description": "Price Order Analytics Service API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080",
+            "description": "Local server"
+        },
+        {
+            "url": "https://api.yourdomain.com",
+            "description": "Production server"
+        }
+    ],
+    "paths": {
+        "/api/orders/statistics": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get orders statistics with grouping and pagination",
+                "operationId": "68fefc74cfee57fb6f887ab203eb7274",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "group_by",
+                        "in": "query",
+                        "description": "Grouping period",
+                        "schema": {
+                            "type": "string",
+                            "default": "month",
+                            "enum": [
+                                "day",
+                                "month",
+                                "year"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "period": {
+                                                        "type": "string",
+                                                        "example": "2025-01"
+                                                    },
+                                                    "orders_count": {
+                                                        "type": "integer",
+                                                        "example": 15
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 15
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 50
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 4
+                                        },
+                                        "group_by": {
+                                            "type": "string",
+                                            "example": "month"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/price": {
+            "get": {
+                "tags": [
+                    "Prices"
+                ],
+                "summary": "Get product price from tile.expert",
+                "description": "Parse product page and return price in EUR",
+                "operationId": "a1e6635cf0eb082b59558a0c5dfed4f3",
+                "parameters": [
+                    {
+                        "name": "factory",
+                        "in": "query",
+                        "description": "Factory name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "marca-corona"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Collection name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "arteseta"
+                        }
+                    },
+                    {
+                        "name": "article",
+                        "in": "query",
+                        "description": "Article code",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "k263-arteseta-camoscio-s000628660"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Price retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "price": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 59.99
+                                        },
+                                        "factory": {
+                                            "type": "string",
+                                            "example": "marca-corona"
+                                        },
+                                        "collection": {
+                                            "type": "string",
+                                            "example": "arteseta"
+                                        },
+                                        "article": {
+                                            "type": "string",
+                                            "example": "k263-arteseta-camoscio-s000628660"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Price not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not retrieve price for the given article."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Orders",
+            "description": "Orders"
+        },
+        {
+            "name": "Prices",
+            "description": "Prices"
+        }
+    ]
+}
