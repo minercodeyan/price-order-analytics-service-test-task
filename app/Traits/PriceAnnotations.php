@@ -53,7 +53,7 @@ trait PriceAnnotations
                 description: "Price not found",
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "message", type: "string", example: "Could not retrieve price for the given article.")
+                        new OA\Property(property: "message", type: "string", example: "Не найдена цена по данному артикулу.")
                     ]
                 )
             ),

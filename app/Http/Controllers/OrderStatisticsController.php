@@ -11,12 +11,9 @@ use Illuminate\Http\JsonResponse;
 class OrderStatisticsController extends Controller
 {
     use OrderStatisticsAnnotations;
-    protected StatisticsService $statisticsService;
 
-    public function __construct(StatisticsService $statisticsService)
-    {
-        $this->statisticsService = $statisticsService;
-    }
+
+    public function __construct(protected StatisticsService $statisticsService) {}
 
     public function index(OrderStatisticsRequest $request): JsonResponse
     {

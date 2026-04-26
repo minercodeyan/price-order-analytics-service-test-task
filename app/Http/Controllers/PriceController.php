@@ -11,9 +11,7 @@ use Illuminate\Http\Response;
 class PriceController extends Controller
 {
     use PriceAnnotations;
-    public function __construct(
-        protected PriceParserService $priceParserService
-    ) {}
+    public function __construct(protected PriceParserService $priceParserService) {}
 
     public function getPrice(PriceRequest $request){
         $factory = $request->input('factory');
@@ -24,7 +22,7 @@ class PriceController extends Controller
 
         if ($price === null) {
             return response()->json([
-                'message' => 'Could not retrieve price for the given article.'
+                'message' => 'Не найдена цена по данному артикулу.'
             ], 404);
         }
 

@@ -16,6 +16,186 @@
         }
     ],
     "paths": {
+        "/api/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get order by ID",
+                "description": "Retrieve detailed information about a specific order by its ID",
+                "operationId": "903fca5af3c36fdf07eb35920f0508e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "hash": {
+                                                    "type": "string",
+                                                    "example": "abc123def456"
+                                                },
+                                                "number": {
+                                                    "type": "string",
+                                                    "example": "ORD-00001"
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "status_text": {
+                                                    "type": "string",
+                                                    "example": "Доставлен"
+                                                },
+                                                "client_name": {
+                                                    "type": "string",
+                                                    "example": "Иван"
+                                                },
+                                                "client_surname": {
+                                                    "type": "string",
+                                                    "example": "Петров"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "ivan@example.com"
+                                                },
+                                                "company_name": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "total_amount": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 1250.5
+                                                },
+                                                "currency": {
+                                                    "type": "string",
+                                                    "example": "EUR"
+                                                },
+                                                "discount": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "create_date": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "delivery": {
+                                                    "properties": {
+                                                        "cost": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 150
+                                                        },
+                                                        "city": {
+                                                            "type": "string",
+                                                            "example": "Москва"
+                                                        },
+                                                        "address": {
+                                                            "type": "string",
+                                                            "example": "ул. Тверская, д. 1"
+                                                        },
+                                                        "tracking_number": {
+                                                            "type": "string",
+                                                            "example": "TRK123456"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "payment": {
+                                                    "properties": {
+                                                        "type": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "full_payment_date": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "nullable": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "article_sku": {
+                                                                "type": "string",
+                                                                "example": "PLATE-001"
+                                                            },
+                                                            "amount": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 10
+                                                            },
+                                                            "price": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 50.5
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Заказ не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Заказ не найден"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/orders/statistics": {
             "get": {
                 "tags": [
@@ -193,7 +373,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Could not retrieve price for the given article."
+                                            "example": "Не найдена цена по данному артикулу."
                                         }
                                     },
                                     "type": "object"
