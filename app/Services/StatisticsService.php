@@ -1,69 +1,48 @@
 <?php
+// app/Services/StatisticsService.php
 
 namespace App\Services;
 
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class StatisticsService
 {
-    /**
-     * Получить статистику заказов с группировкой и пагинацией
-     *
-     * @param string $groupBy
-     * @param int $page
-     * @param int $perPage
-     * @return array
-     */
     public function getOrderStatistics(string $groupBy, int $page, int $perPage): array
     {
-        // Формируем группировку в зависимости от параметра
+        DB::statement("SET SESSION sql_mode = ''");
+
         $groupByConfig = $this->getGroupByConfig($groupBy);
 
-        // Получаем данные с группировкой
-        $query = Order::query()
-            ->whereNull('deleted_at') // Только не удаленные
+        $results = Order::query()
+            ->whereNull('deleted_at')
             ->select(
                 DB::raw($groupByConfig['select'] . ' as period'),
                 DB::raw('COUNT(*) as orders_count')
             )
             ->groupBy(DB::raw($groupByConfig['group_by']))
-            ->orderBy('period', 'desc');
-
-        // Получаем общее количество для пагинации
-        $total = $query->get()->count();
-
-        // Применяем пагинацию
-        $results = $query
-            ->skip(($page - 1) * $perPage)
-            ->take($perPage)
+            ->orderBy(DB::raw('MIN(create_date)'), 'desc')
             ->get();
 
-        // Формируем данные для ответа
-        $data = [];
+
+        $allData = [];
         foreach ($results as $item) {
-            $data[] = [
+            $allData[] = [
                 'period' => $item->period,
                 'orders_count' => (int) $item->orders_count,
             ];
         }
 
-        // Создаем объект пагинации
-        $paginator = new LengthAwarePaginator(
-            $data,
-            $total,
-            $perPage,
-            $page,
-            ['path' => '/api/orders/statistics']
-        );
+        $total = count($allData);
+        $offset = ($page - 1) * $perPage;
+        $data = array_slice($allData, $offset, $perPage);
 
         return [
             'data' => $data,
-            'current_page' => $paginator->currentPage(),
-            'per_page' => $paginator->perPage(),
-            'total' => $paginator->total(),
-            'last_page' => $paginator->lastPage(),
+            'current_page' => $page,
+            'per_page' => $perPage,
+            'total' => $total,
+            'last_page' => ceil($total / $perPage),
             'group_by' => $groupBy,
         ];
     }
@@ -74,22 +53,14 @@ class StatisticsService
             'day' => [
                 'select' => "DATE_FORMAT(create_date, '%Y-%m-%d')",
                 'group_by' => "DATE(create_date)",
-                'format' => 'Y-m-d',
-            ],
-            'month' => [
-                'select' => "DATE_FORMAT(create_date, '%Y-%m')",
-                'group_by' => "YEAR(create_date), MONTH(create_date)",
-                'format' => 'Y-m',
             ],
             'year' => [
                 'select' => "DATE_FORMAT(create_date, '%Y')",
                 'group_by' => "YEAR(create_date)",
-                'format' => 'Y',
             ],
             default => [
                 'select' => "DATE_FORMAT(create_date, '%Y-%m')",
                 'group_by' => "YEAR(create_date), MONTH(create_date)",
-                'format' => 'Y-m',
             ],
         };
     }

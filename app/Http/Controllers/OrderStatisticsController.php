@@ -15,12 +15,7 @@ class OrderStatisticsController extends Controller
         $this->statisticsService = $statisticsService;
     }
 
-    /**
-     * Получить статистику заказов
-     *
-     * @param OrderStatisticsRequest $request
-     * @return JsonResponse
-     */
+
     public function index(OrderStatisticsRequest $request): JsonResponse
     {
         $page = $request->input('page', 1);
