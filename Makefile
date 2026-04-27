@@ -8,6 +8,6 @@ setup:
 
 	docker-compose exec app php artisan migrate
 
-	docker-compose exec php artisan db:seed
+	docker-compose exec app php artisan db:seed
 
 	docker-compose exec app php artisan route:list
