@@ -90,4 +90,58 @@ trait OrderAnnotations
         ]
     )]
     public function show() {}
+
+    #[OA\Get(
+        path: "/api/search/orders",
+        description: "Search orders using Manticore (*)",
+        summary: "Search orders (*)",
+        tags: ["Orders"],
+        parameters: [
+            new OA\Parameter(
+                name: "q",
+                description: "Search query (order number, email, client name, etc.)",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(
+                    type: "string",
+                    example: "ORD-00001"
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Search results returned successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(
+                            property: "data",
+                            type: "array",
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: "id", type: "integer", example: 1),
+                                    new OA\Property(property: "number", type: "string", example: "ORD-00001"),
+                                    new OA\Property(property: "email", type: "string", example: "ivan@example.com"),
+                                    new OA\Property(property: "client_name", type: "string", example: "Иван"),
+                                    new OA\Property(property: "client_surname", type: "string", example: "Петров")
+                                ]
+                            )
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 400,
+                description: "Invalid query",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: false),
+                        new OA\Property(property: "message", type: "string", example: "Query required")
+                    ]
+                )
+            )
+        ]
+    )]
+    public function search() {}
 }

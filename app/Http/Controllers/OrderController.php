@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SoapStoreRequest;
 use App\Http\Resources\OrderResource;
+use App\Services\ManticoreService;
 use App\Services\OrderService;
 use App\Services\SoapService;
 use App\Traits\OrderAnnotations;
@@ -16,7 +17,9 @@ class OrderController extends Controller
     use OrderAnnotations, SoapOrderAnnotations;
     public function __construct(
         protected SoapService $soapService,
-        protected OrderService $orderService) {}
+        protected OrderService $orderService,
+        protected ManticoreService $manticoreService
+    ) {}
     public function show(int $id): JsonResponse
     {
         $order = $this->orderService->getOrderById($id);
@@ -56,5 +59,24 @@ class OrderController extends Controller
             ],
             'message' => $result['message']
         ], 201);
+    }
+
+    public function search(Request $request,)
+    {
+        $q = $request->input('q');
+
+        if (!$q) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Query required'
+            ], 400);
+        }
+
+        $results = $this->manticoreService->searchOrders($q);
+
+        return response()->json([
+            'success' => true,
+            'data' => $results
+        ]);
     }
 }

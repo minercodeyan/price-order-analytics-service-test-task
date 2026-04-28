@@ -41,11 +41,13 @@ services:
   manticore:
     image: manticoresearch/manticore:latest
     container_name: manticore_search
+    command: searchd --config /etc/manticoresearch/manticore.conf --nodetach
     ports:
-      - "${MANTICORE_HTTP:-9308}:9308"
-      - "${MANTICORE_MYSQL:-9306}:9306"
+      - "9306:9306"
+      - "9308:9308"
     volumes:
       - manticore_data:/var/lib/manticore
+      - ./manticore.conf:/etc/manticoresearch/manticore.conf
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

@@ -196,6 +196,94 @@
                 }
             }
         },
+        "/api/search/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Search orders (*)",
+                "description": "Search orders using Manticore (*)",
+                "operationId": "a229660fe2b7420527992ba29b647aa7",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search query (order number, email, client name, etc.)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "ORD-00001"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results returned successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "number": {
+                                                        "type": "string",
+                                                        "example": "ORD-00001"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "ivan@example.com"
+                                                    },
+                                                    "client_name": {
+                                                        "type": "string",
+                                                        "example": "Иван"
+                                                    },
+                                                    "client_surname": {
+                                                        "type": "string",
+                                                        "example": "Петров"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Query required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/orders/statistics": {
             "get": {
                 "tags": [
@@ -417,7 +505,7 @@
                                     "user_id": {
                                         "description": "User ID (optional)",
                                         "type": "integer",
-                                        "example": 123,
+                                        "example": 1,
                                         "nullable": true
                                     },
                                     "client_name": {

@@ -11,3 +11,5 @@ setup:
 	docker-compose exec app php artisan db:seed
 
 	docker-compose exec app php artisan route:list
+
+	docker exec -it manticore_search indexer --all --rotate
